@@ -21,6 +21,12 @@ in
         description = lib.mdDoc "Open ports in the firewall for fr24.";
       };
 
+      extraOptions = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        description = lib.mdDoc "Command line arguments passed to dump1090-fa";
+      };
+
       ui = {
         enable = lib.mkEnableOption (lib.mdDoc "Enable dump1090 web ui");
 
@@ -61,7 +67,7 @@ in
         DynamicUser = true;
         Group = "plugdev";
         RuntimeDirectory = "dump1090-fa";
-        ExecStart = "${cfg.package}/bin/start-dump1090-fa --write-json /run/dump1090-fa --write-json-every 1 --quiet";
+        ExecStart = "${cfg.package}/bin/start-dump1090-fa --write-json /run/dump1090-fa --write-json-every 1 --quiet ${lib.concatStringsSep " " cfg.extraOptions}";
         Restart = "on-failure";
       };
     };
